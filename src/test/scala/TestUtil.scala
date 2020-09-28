@@ -1,11 +1,18 @@
-import scala.concurrent.ops._
-import scala.concurrent._
+import java.util.concurrent.LinkedBlockingQueue
 
 object TestUtil {
+  def spawn(p: => Unit): Unit = {
+    val t = new Thread() { override def run(): Unit = p }
+    t.start()
+  }
+
   // launch a list of threads in parallel, and wait till they all finish
-  def spawnAndJoin(bodies: Seq[() => Unit]): Unit =
-    (for (body <- bodies;
-	  done = new SyncVar[Unit];
-	  _ = spawn { body(); done set () })
-     yield done) foreach (_.get)
+  def spawnAndJoin(bodies: Seq[() => Unit]): Unit = {
+    val qs = for {
+      body <- bodies
+      done = new LinkedBlockingQueue[Unit](1)
+      _ = spawn { body(); done put () }
+    } yield done
+    qs foreach (_.take())
+  }
 }

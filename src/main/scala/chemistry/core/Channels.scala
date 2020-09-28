@@ -35,22 +35,22 @@ private final case class Endpoint[A,B,C](
     // todo: avoid attempts of claiming the same message twice
     @tailrec def tryFrom(n: incoming.Node, retry: Boolean): Any = 
       if (n == null) {
-	if (retry) Retry else Block
+	      if (retry) Retry else Block
       } else if ((n.data.offer eq offer) || rx.hasOffer(n.data.offer)) {
-	tryFrom(n.next, retry)
+        tryFrom(n.next, retry)
       } else n.data.exchange.compose(k).tryReact(a, 
 						 rx.withOffer(n.data.offer), 
 						 offer) match {
-	case Retry => tryFrom(n.next, true)
-	case Block => tryFrom(n.next, retry)
-	case ans   => ans
+        case Retry => tryFrom(n.next, true)
+        case Block => tryFrom(n.next, retry)
+        case ans   => ans
       }
 
     // send message if so requested.  note that we send the message
     // *before* attempting to react with existing messages in the
     // other direction.
     // TODO: should combine !maysync with blocking check
-    if (offer != null && !k.maySync)  
+    if (offer != null && !k.maySync)
       outgoing.put(new Message(a, rx, k, offer))
 
     // now attempt an immediate reaction

@@ -43,23 +43,23 @@ abstract class Reagent[-A, +B] {
       val backoff = new Backoff
       val maySync = this.maySync // cache
       @tailrec def retryLoop(shouldBlock: Boolean): B = {
-	// to think about: can a single waiter be reused?
-	val wait = maySync || shouldBlock
-	val waiter = if (wait) new Waiter[B](shouldBlock) else null
+        // to think about: can a single waiter be reused?
+        val wait = maySync || shouldBlock
+        val waiter = if (wait) new Waiter[B](shouldBlock) else null
 
-	tryReact(a, Reaction.inert, waiter) match {
-	  case (bc: BacktrackCommand) if wait => {
-	    bc.bottom(waiter, backoff, snoop(a))
-	    waiter.tryAbort match { // rescind waiter, but check if already
-				    // completed
-	      case Some(ans) => ans.asInstanceOf[B] 
-	      case None      => retryLoop(bc.isBlock)
-	    }
-	  }
-	  case Retry => backoff.once; retryLoop(false)
-	  case Block => retryLoop(true)
-	  case ans => ans.asInstanceOf[B]
-	}
+        tryReact(a, Reaction.inert, waiter) match {
+          case (bc: BacktrackCommand) if wait => {
+            bc.bottom(waiter, backoff, snoop(a))
+            waiter.tryAbort match { // rescind waiter, but check if already
+                  // completed
+              case Some(ans) => ans.asInstanceOf[B]
+              case None      => retryLoop(bc.isBlock)
+            }
+          }
+          case Retry => backoff.once; retryLoop(false)
+          case Block => retryLoop(true)
+          case ans => ans.asInstanceOf[B]
+        }
       }
       backoff.once
       retryLoop(false)

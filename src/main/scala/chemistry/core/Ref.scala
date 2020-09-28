@@ -22,8 +22,8 @@ final class Ref[A <: AnyRef](init: A) {
     def tryReact(u: Unit, rx: Reaction, offer: Offer[B]): Any = {
       if (offer != null) offers.put(offer)
       data.get match {
-	case null => Retry
-	case ans => ans
+        case null => Retry
+        case ans => ans
       }
     }
     def composeI[C](next: Reagent[B,C]) = Read(k >> next)
@@ -58,22 +58,22 @@ final class Ref[A <: AnyRef](init: A) {
 	   extends Reagent[B, D] {
     def tryReact(b: B, rx: Reaction, offer: Offer[D]): Any = {
       if (rx.canCASImmediate(k, offer)) {
-	// no need to store offer here, as we will either succeed or retry
-	// (never block)
+        // no need to store offer here, as we will either succeed or retry
+        // (never block)
 
-	val ov = data.get
-	if ((ov eq null) || !valid(ov,b)) return Retry
-	val nv = newValue(ov, b)
-	if (data.compareAndSet(ov, nv))
-	  k.tryReact(retValue(ov, b), rx, offer)
-	else Retry
+        val ov = data.get
+        if ((ov eq null) || !valid(ov,b)) return Retry
+        val nv = newValue(ov, b)
+        if (data.compareAndSet(ov, nv))
+          k.tryReact(retValue(ov, b), rx, offer)
+	      else Retry
       } else {
-	if (offer != null) offers.put(offer) 
+        if (offer != null) offers.put(offer)
 
-	val ov = data.get
-	if ((ov eq null) || !valid(ov,b)) return Retry
-	val nv = newValue(ov, b)
-	k.tryReact(retValue(ov, b), rx.withCAS(Ref.this, ov, nv), offer)
+        val ov = data.get
+        if ((ov eq null) || !valid(ov,b)) return Retry
+        val nv = newValue(ov, b)
+        k.tryReact(retValue(ov, b), rx.withCAS(Ref.this, ov, nv), offer)
       }
     }
     def composeI[E](next: Reagent[D,E]) = 
@@ -104,7 +104,7 @@ final class Ref[A <: AnyRef](init: A) {
       @inline def newValue(a: A, u: Unit): A = f(a)._1
       @inline def retValue(a: A, u: Unit): B = f(a)._2
     }
- 
+
 }
 object Ref {
   @inline def apply[A <: AnyRef](init: A): Ref[A] = new Ref(init)

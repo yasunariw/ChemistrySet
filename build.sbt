@@ -21,11 +21,7 @@ publishArtifact in (Compile, packageDoc) := false
 
 scalaVersion := "2.13.3"
 
-//resolvers += "repo.codahale.com" at "http://repo.codahale.com"
-
-//libraryDependencies ++= Seq(
-//  "com.codahale" % "simplespec_2.9.0-1" % "0.4.1"
-//)
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8" % Test
 
 fork := true
 
