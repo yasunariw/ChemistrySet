@@ -1,15 +1,16 @@
+package chemistry.core
+
 // Representation of reagents offering to react:
 //   - used to discover catalysts
 //   - used to discover (possibly blocked) partners for SwapChans
 //   - used to discover reagents blocked on Ref cell values
 
-package core
+import java.util.concurrent.atomic._
+import java.util.concurrent.locks._
 
 import scala.annotation.tailrec
-import java.util.concurrent.locks._
-import java.util.concurrent.atomic._
 
-private abstract class Offer[-A] extends DeletionFlag {
+private[chemistry] abstract class Offer[-A] extends DeletionFlag {
   // is the Offer still available?
   def isActive: Boolean
 

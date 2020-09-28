@@ -1,9 +1,10 @@
 import scala.annotation.tailrec
 import System.out._
+
 import scala.concurrent.ops._
 import com.codahale.simplespec.Spec
 import com.codahale.simplespec.annotation.test
-import chemistry._
+import chemistry.core.Reagent
 
 trait QueueTests {
   import org.specs2.matcher.MustMatchers._

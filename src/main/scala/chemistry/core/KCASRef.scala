@@ -1,9 +1,8 @@
+package chemistry.core
+
 // an implementation of KCAS
 
-package core
-
 import scala.annotation.tailrec
-import java.util.concurrent.atomic._
 
 /*
 // a k-cas-able reference cell
@@ -58,7 +57,7 @@ private final class KCAS(val casList: List[CAS[_]]) {
     // attempt to place KCAS record in each CASed reference.  returns null
     // if successful, and otherwise the point in the CAS list to rollback
     // from.
-    @tailrec def acquire(casList: List[CAS[_]]): List[CAS[_]] = 
+    @tailrec def acquire(casList: List[CAS[_]]): List[CAS[_]] =
       if (!isPending) casList
       else casList match {
 	case Nil => null
@@ -75,7 +74,7 @@ private final class KCAS(val casList: List[CAS[_]]) {
 	}
       }
 
-    @tailrec def rollBackBetween(start: List[CAS[_]], end: List[CAS[_]]) { 
+    @tailrec def rollBackBetween(start: List[CAS[_]], end: List[CAS[_]]) {
       if (start != end) start match {
 	case Nil => throw Util.Impossible // somehow went past the `end`
 	case CAS(ref, ov, nv) :: rest => {
@@ -132,7 +131,7 @@ private object KCAS {
 	case Nil => throw Util.Impossible // somehow went past the `end`
 	case CAS(ref, ov, nv) :: rest => {
 	  ref.data.lazySet(ov) // roll back to old value
-	  //ref.data.compareAndSet(null, ov) 
+	  //ref.data.compareAndSet(null, ov)
 	  rollBackBetween(rest, end)
 	}
       }

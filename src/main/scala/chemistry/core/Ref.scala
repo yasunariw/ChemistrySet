@@ -1,9 +1,10 @@
+package chemistry.core
+
 // Atomically updateable reference cells
 
-package core
+import java.util.concurrent.atomic._
 
 import scala.annotation.tailrec
-import java.util.concurrent.atomic._
 
 final class Ref[A <: AnyRef](init: A) {
   private[chemistry] val data = new AtomicReference(init)
@@ -123,7 +124,7 @@ object upd {
     r.upd(f)
 
 /*
-  @inline def fast[A <: AnyRef,B,C](r: Ref[A],f: (A,B) => (A,C)) = 
+  @inline def fast[A <: AnyRef,B,C](r: Ref[A],f: (A,B) => (A,C)) =
     new Reagent[B,C] {
       private val k = Commit[C]()
       def tryReact(b: B, rx: Reaction, offer: Offer[C]): Any = {

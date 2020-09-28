@@ -1,11 +1,11 @@
 // An implementation of the classic Treiber stack via reagents
 
-package data
+package chemistry.data
 
 import scala.annotation.tailrec
 import java.util.concurrent.atomic._
 
-import core.{Reagent, Ref}
+import chemistry.core.{Reagent, Ref}
 
 import scala.collection.immutable._
 

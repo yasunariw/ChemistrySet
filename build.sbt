@@ -2,13 +2,11 @@ name := "ChemistrySet"
 
 version := "0.1"
 
-scalaVersion := "2.13.3"
-
 scalacOptions += "-deprecation"
 
 scalacOptions += "-unchecked"
 
-scalacOptions += "-optimize"
+//scalacOptions += "-optimize"
 
 //scalacOptions += "-Yinline"
 
@@ -21,9 +19,9 @@ parallelExecution in Test := false
 // disable publishing of main docs
 publishArtifact in (Compile, packageDoc) := false
 
-scalaVersion := "2.9.1"
+scalaVersion := "2.13.3"
 
-resolvers += "repo.codahale.com" at "http://repo.codahale.com"
+//resolvers += "repo.codahale.com" at "http://repo.codahale.com"
 
 //libraryDependencies ++= Seq(
 //  "com.codahale" % "simplespec_2.9.0-1" % "0.4.1"

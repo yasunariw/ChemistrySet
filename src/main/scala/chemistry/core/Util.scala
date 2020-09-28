@@ -1,12 +1,9 @@
+package chemistry.core
+
 // Misc utilities used throughout the Chemistry Set.  Not exported.
 
-package core
-
-import scala.util._
 import scala.annotation.tailrec
-import scala.concurrent._
 import scala.math._
-import java.lang.Thread
 
 private object Util {
   def undef[A]: A = throw new Exception()

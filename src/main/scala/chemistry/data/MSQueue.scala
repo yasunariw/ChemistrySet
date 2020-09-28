@@ -1,8 +1,8 @@
 // An implementation of the classic Michael-Scott queue via reagents
 
-package data
+package chemistry.data
 
-import core.{Reagent, Ref, computed}
+import chemistry.core.{Reagent, Ref, computed}
 
 import scala.annotation.tailrec
 

@@ -1,8 +1,6 @@
+package chemistry.core
+
 // Exponential backoff.
-
-package core
-
-import scala.util._
 
 private object Backoff {
   val maxCount: Int = 14

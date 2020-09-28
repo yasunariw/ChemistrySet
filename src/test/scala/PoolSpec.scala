@@ -1,9 +1,11 @@
 import scala.annotation.tailrec
 import System.out._
 import java.util.concurrent.atomic._
+
+import chemistry.core.{CircularPool, DeletionFlag, Pool}
+
 import scala.concurrent.ops._
 import org.specs2.mutable._
-import chemistry._
 
 trait PoolTests extends Specification {
   private abstract class DelStatus

@@ -1,6 +1,6 @@
 // An implementation of the Harris-Michael linked list via reagents
 
-package data
+package chemistry.data
 
 /*
 
@@ -21,8 +21,8 @@ sealed class Set[A] {
     val retryIfDel: Reagent[Unit] = Return(())
   }
   private case class INode(
-    next: Ref[Node], 
-    data: A, 
+    next: Ref[Node],
+    data: A,
     deleted: Ref[Boolean] = Ref(false)
   ) extends PNode {
     val retryIfDel: Reagent[Unit] = deleted.cas(false, false)
@@ -34,12 +34,12 @@ sealed class Set[A] {
 
   private @inline final def find(key: Int): FindResult = {
     @tailrec def walk(c: PNode): (PNode, Node) = c match {
-      case PNode(Ref(Tail)) => 
+      case PNode(Ref(Tail)) =>
 	(c, Tail)
-      case PNode(r@Ref(n@INode(Ref(m), _, Ref(true)))) => 
+      case PNode(r@Ref(n@INode(Ref(m), _, Ref(true)))) =>
 	r.cas(n, m) !?; walk(c)
-      case PNode(Ref(n@INode(_, data, Ref(false)))) =>	
-	if (key == data.hashCode())     Found(c, n) 
+      case PNode(Ref(n@INode(_, data, Ref(false)))) =>
+	if (key == data.hashCode())     Found(c, n)
 	else if (key < data.hashCode()) NotFound(c, n)
 	else walk(n)
     }

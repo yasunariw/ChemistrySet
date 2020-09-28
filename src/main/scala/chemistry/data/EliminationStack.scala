@@ -1,8 +1,8 @@
 // The Treiber stack with elimination-backoff, via reagents
 
-package data
+package chemistry.data
 
-import core.{Chan, Reagent}
+import chemistry.core.{Chan, Reagent}
 
 final class EliminationStack[A >: Null] {
   private val stack = new TreiberStack[A]

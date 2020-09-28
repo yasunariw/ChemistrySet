@@ -1,7 +1,7 @@
+package chemistry.core
+
 // Internal representation of queued up actions making up a potential
 // reaction.
-
-package core
 
 import scala.collection.immutable.HashSet
 
@@ -10,7 +10,6 @@ private sealed class Reaction private (
   val pcList: List[Unit => Unit],	// post-commit actions
   val offerSet: HashSet[Offer[_]]       // offers intended for consumption
 ) {
-  import Reaction._
   
   def casCount: Int = casList.size
 

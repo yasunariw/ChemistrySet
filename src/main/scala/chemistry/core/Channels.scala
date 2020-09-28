@@ -1,9 +1,8 @@
+package chemistry.core
+
 // Message passing constructions: synchronous channels and swap channels.
 
-package core
-
 import scala.annotation.tailrec
-import java.util.concurrent.locks._
 
 final private class Message[A,B,C](
   payload: A,		 // the actual content of the message

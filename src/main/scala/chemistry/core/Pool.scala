@@ -1,10 +1,10 @@
+package chemistry.core
+
 // A concurrent, unordered bag, used to represent channels
 
-package core
+import java.util.concurrent.atomic._
 
 import scala.annotation.tailrec
-import java.util.concurrent.atomic._
-import java.util.concurrent.locks._
 
 trait DeletionFlag {
   def isDeleted: Boolean
@@ -22,7 +22,7 @@ trait Pool[A <: DeletionFlag] {
 
 /*
 final class Pool[A <: DeletionFlag] {
-  final case class Node(data: A, next: Cursor) 
+  final case class Node(data: A, next: Cursor)
   val cursor = new Cursor(null)
 
   final class Cursor private[Pool](node: Node) {
@@ -30,7 +30,7 @@ final class Pool[A <: DeletionFlag] {
     @tailrec def get: Node = ref.read ! () match {
       case null => null
       case n@Node(data, next) =>
-	if (data.isDeleted) { 
+	if (data.isDeleted) {
 //	  ref.cas(n, next.ref.read ! ()) !? ()
 	  ref.data.lazySet(next.ref.data.get)
 	  get
@@ -217,7 +217,7 @@ final class BoundPool[A <: DeletionFlag] {
 	lock.unlock
       } else {
 	val cur = slot.get
-	if (cur == null || cur.data.isDeleted) {
+	if (cur == null || cur.isDeleted) {
 	  if (slot.compareAndSet(cur, n)) return
 	}
 

@@ -1,9 +1,9 @@
 // A two-way exchanger: unlike channels, exchangers do not distinguish
 // one side from another
 
-package sync
+package chemistry.sync
 
-import core.{Reagent, SwapChan}
+import chemistry.core.{Reagent, SwapChan}
 
 final class Exchanger[A] {
   private val (c, d) = SwapChan[A,A]()

@@ -1,10 +1,12 @@
+package chemistry.core
+
 // The core reagent implementation and accompanying combinators
 
-package core
+import java.util.concurrent.locks._
+
+import chemistry.core.Util.Implicits._
 
 import scala.annotation.tailrec
-import java.util.concurrent.locks._
-import Util.Implicits._
 
 private[chemistry] sealed abstract class BacktrackCommand {
   // what to do when the backtracking command runs out of choices
@@ -135,7 +137,7 @@ object ret {
 
 // Not sure whether this should be available as a combinaor
 // object retry extends Reagent[Any,Nothing] {
-//   final def tryReact[A](a: Any, rx: Reaction, k: K[Nothing,A]): A = 
+//   final def tryReact[A](a: Any, rx: Reaction, k: K[Nothing,A]): A =
 //     throw ShouldRetry
 // }
 

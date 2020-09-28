@@ -1,6 +1,6 @@
-package core
+package chemistry.core
 
-class ThreadLocal[T](init: => T) 
+class ThreadLocal[T](init: => T)
 extends java.lang.ThreadLocal[T] with Function0[T] {
   override def initialValue:T = init
   def apply = get
