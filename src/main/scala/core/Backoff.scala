@@ -1,6 +1,6 @@
 // Exponential backoff.
 
-package chemistry
+package core
 
 import scala.util._
 

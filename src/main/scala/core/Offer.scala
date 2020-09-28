@@ -3,7 +3,7 @@
 //   - used to discover (possibly blocked) partners for SwapChans
 //   - used to discover reagents blocked on Ref cell values
 
-package chemistry
+package core
 
 import scala.annotation.tailrec
 import java.util.concurrent.locks._

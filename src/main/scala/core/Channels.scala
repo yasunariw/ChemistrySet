@@ -1,6 +1,6 @@
 // Message passing constructions: synchronous channels and swap channels.
 
-package chemistry
+package core
 
 import scala.annotation.tailrec
 import java.util.concurrent.locks._

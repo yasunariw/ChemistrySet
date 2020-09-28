@@ -11,3 +11,4 @@ project/boot/
 unlicensed/
 .DS_Store
 lib/
+.idea/

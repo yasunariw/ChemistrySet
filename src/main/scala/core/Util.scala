@@ -1,11 +1,10 @@
 // Misc utilities used throughout the Chemistry Set.  Not exported.
 
-package chemistry
+package core
 
 import scala.util._
 import scala.annotation.tailrec
 import scala.concurrent._
-import scala.concurrent.ops._
 import scala.math._
 import java.lang.Thread
 

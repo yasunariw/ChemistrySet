@@ -1,7 +1,9 @@
 // A simple nonblocking counter.  Can be used to implement semaphores,
 // or the equivalent to asynchronous unit channels in the join calculus.
 
-package chemistry
+package data
+
+import core.Ref
 
 final class Counter(init: Int = 0) {
   private val state = Ref[java.lang.Integer](init)

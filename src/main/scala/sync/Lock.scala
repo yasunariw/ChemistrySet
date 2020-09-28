@@ -1,6 +1,8 @@
 // Simple boolean flag lock implementation; nonreentrant
 
-package chemistry
+package sync
+
+import core.{Reagent, Ref}
 
 class IllegalRelease extends Exception
 

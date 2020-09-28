@@ -1,6 +1,8 @@
 // One-time use count-down latch
 
-package chemistry
+package sync
+
+import data.Counter
 
 final class CountDownLatch(count: Int) {
   private val state = new Counter(count)

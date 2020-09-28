@@ -1,7 +1,7 @@
 // Internal representation of queued up actions making up a potential
 // reaction.
 
-package chemistry
+package core
 
 import scala.collection.immutable.HashSet
 

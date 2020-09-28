@@ -1,6 +1,6 @@
 // An implementation of the Harris-Michael linked list via reagents
 
-package chemistry
+package data
 
 /*
 

@@ -1,6 +1,6 @@
 // Tracks basic performance data of the library
 
-package chemistry
+package core
 
 private object Stats {
   // todo, obviously...

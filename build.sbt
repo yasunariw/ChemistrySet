@@ -2,6 +2,8 @@ name := "ChemistrySet"
 
 version := "0.1"
 
+scalaVersion := "2.13.3"
+
 scalacOptions += "-deprecation"
 
 scalacOptions += "-unchecked"
@@ -23,9 +25,9 @@ scalaVersion := "2.9.1"
 
 resolvers += "repo.codahale.com" at "http://repo.codahale.com"
 
-libraryDependencies ++= Seq(
-  "com.codahale" % "simplespec_2.9.0-1" % "0.4.1"
-)
+//libraryDependencies ++= Seq(
+//  "com.codahale" % "simplespec_2.9.0-1" % "0.4.1"
+//)
 
 fork := true
 

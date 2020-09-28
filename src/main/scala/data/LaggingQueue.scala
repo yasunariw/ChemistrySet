@@ -1,7 +1,9 @@
 // An implementation of the Michael-Scott queue via reagents which
 // allows the tail pointer to lag arbitrarily
 
-package chemistry
+package data
+
+import core.{Reagent, Ref, computed}
 
 import scala.annotation.tailrec
 

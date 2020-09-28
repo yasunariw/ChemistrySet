@@ -1,6 +1,6 @@
 // A concurrent, unordered bag, used to represent channels
 
-package chemistry
+package core
 
 import scala.annotation.tailrec
 import java.util.concurrent.atomic._

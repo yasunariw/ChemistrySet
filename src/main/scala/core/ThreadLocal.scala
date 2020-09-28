@@ -1,4 +1,4 @@
-package chemistry
+package core
 
 class ThreadLocal[T](init: => T) 
 extends java.lang.ThreadLocal[T] with Function0[T] {

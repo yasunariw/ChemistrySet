@@ -1,6 +1,8 @@
 // Simple nonreentrant rw-lock implementation
 
-package chemistry
+package sync
+
+import core.Ref
 
 //class IllegalRelease extends Exception
 

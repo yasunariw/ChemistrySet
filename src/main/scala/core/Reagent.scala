@@ -1,10 +1,10 @@
 // The core reagent implementation and accompanying combinators
 
-package chemistry
+package core
 
 import scala.annotation.tailrec
 import java.util.concurrent.locks._
-import chemistry.Util.Implicits._
+import Util.Implicits._
 
 private[chemistry] sealed abstract class BacktrackCommand {
   // what to do when the backtracking command runs out of choices
