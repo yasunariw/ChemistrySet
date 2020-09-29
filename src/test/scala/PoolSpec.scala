@@ -3,6 +3,8 @@ import java.util.concurrent.atomic.AtomicReference
 import chemistry.core.{CircularPool, DeletionFlag, Pool}
 import org.scalatest.{FunSpec, Matchers}
 
+import scala.language.reflectiveCalls
+
 trait PoolSpec { this: FunSpec with Matchers =>
   private abstract class DelStatus
   private final case object Deleted extends DelStatus

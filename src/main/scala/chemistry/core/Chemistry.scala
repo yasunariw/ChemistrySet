@@ -1,5 +1,5 @@
 package chemistry.core
 
 object Chemistry {
-  var procs = Runtime.getRuntime.availableProcessors
+  var procs: Int = Runtime.getRuntime.availableProcessors
 }

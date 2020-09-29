@@ -26,24 +26,24 @@ private[chemistry] abstract class Offer[-A] extends DeletionFlag {
   ): Any
 
   // an alias used for Offers appearing in Pools
-  def isDeleted = !isActive 
+  def isDeleted: Boolean = !isActive
 
   // used only when the Offer is enrolled in a Ref, and the value of the Ref
   // changes
-  def abortAndWake: Unit
+  def abortAndWake(): Unit
 }
 
 private class Catalyst[-A](dissolvent: Reagent[Unit,A]) extends Offer[A] {
   private val alive = new AtomicReference[Boolean](true)
 
-  def isActive = alive.get
+  def isActive: Boolean = alive.get
   def consumeAndContinue[B,C](
     completeWith: A, continueWith: B, 
     rx: Reaction, k: Reagent[B, C], enclosingOffer: Offer[C]
   ): Any = 
     k.tryReact(continueWith, rx, enclosingOffer)
 
-  def abortAndWake {
+  def abortAndWake(): Unit = {
     if (alive.compareAndSet(true, false)) 
       Reagent.dissolve(dissolvent) // reinstate the catalyst
   }
@@ -54,6 +54,7 @@ private object Waiter {
   object Waiting extends WaiterStatus
   object Aborted extends WaiterStatus
 }
+
 private final class Waiter[-A](val blocking: Boolean) 
 	      extends Offer[A] with DeletionFlag {
   import Waiter._
@@ -62,7 +63,7 @@ private final class Waiter[-A](val blocking: Boolean)
 
   // the thread that *created* the Waiter
   private val waiterThread = Thread.currentThread() 
-  private def wake(u: Unit) {
+  private def wake(u: Unit): Unit = {
     if (blocking) LockSupport.unpark(waiterThread)
   }
   
@@ -83,9 +84,9 @@ private final class Waiter[-A](val blocking: Boolean)
   @inline def rxWithAbort(rx: Reaction): Reaction =
     rx.withCAS(status, Waiting, Aborted)
 
-  def abortAndWake = if (tryAbort eq None) wake()
+  def abortAndWake(): Unit = if (tryAbort eq None) wake(())
 
-  @inline def tryComplete(a: A) = 
+  @inline def tryComplete(a: A): Boolean =
     status.data.compareAndSet(Waiting, a.asInstanceOf[AnyRef])
   @inline def rxWithCompletion(rx: Reaction, a: A): Reaction = 
     rx.withCAS(status, Waiting, a.asInstanceOf[AnyRef])
@@ -94,17 +95,19 @@ private final class Waiter[-A](val blocking: Boolean)
     completeWith: A, continueWith: B, 
     rx: Reaction, k: Reagent[B, C], enclosingOffer: Offer[C]
   ): Any = {
-    val newRX = 
-      if (rx.canCASImmediate(k, enclosingOffer)) {
-	if (!tryComplete(completeWith)) // attempt early, and
-	  return Retry	                // retry early on failure
-	else rx		      
-      } else rxWithCompletion(rx, completeWith)
+    val newRX = if (rx.canCASImmediate(k, enclosingOffer)) {
+        if (!tryComplete(completeWith)) // attempt early, and
+          return Retry	                // retry early on failure
+        else rx
+    } else {
+      rxWithCompletion(rx, completeWith)
+    }
 
-    if (blocking)
+    if (blocking) {
       k.tryReact(continueWith, newRX.withPostCommit(wake), enclosingOffer)
-    else
+    } else {
       k.tryReact(continueWith, newRX, enclosingOffer)
+    }
   }
 
   // def reset { status.set(Waiting) }

@@ -8,7 +8,7 @@ import scala.math._
 private object Util {
   def undef[A]: A = throw new Exception()
 
-  @inline def nanoToMilli(nano: Long): Double = nano / 1000000
+  @inline def nanoToMilli(nano: Long): Double = nano.toDouble / 1000000
 
   def time(thunk: => Unit): Double = {   
     val t1 = System.nanoTime
@@ -29,9 +29,9 @@ private object Util {
       case _    => ()
     }
 
-  def fork(code: => Unit) {
-    val runnable = new Runnable { def run() { code } }
-    (new Thread(runnable)).start()
+  def fork(code: => Unit): Unit = {
+    val runnable = new Runnable { def run(): Unit = { code } }
+    new Thread(runnable).start()
   }
 
   def mean(ds: Seq[Double]): Double = ds.sum/ds.length
@@ -58,11 +58,10 @@ private object Util {
   object Impossible extends Exception
 
   object Implicits {
-    implicit def functionToPartialFunction[A,B](f: A => B):
-      PartialFunction[A,B] = 
+    implicit def functionToPartialFunction[A,B](f: A => B): PartialFunction[A,B] =
       new PartialFunction[A,B] {
-	def isDefinedAt(x:A) = true
-	def apply(x:A) = f(x)
+        def isDefinedAt(x:A) = true
+        def apply(x:A): B = f(x)
       }
   }
 
@@ -75,12 +74,12 @@ private object Util {
 
 // an unsynchronized, but thread-varying RNG
 private final class Random(var seed: Long = 1) {
-  def nextSeed {
+  def nextSeed(): Unit = {
     seed = Random.nextSeed(seed)
   }
 
   def next(max: Int): Int = {    
-    nextSeed
+    nextSeed()
     Random.scale(seed, max)
   }
 

@@ -75,7 +75,7 @@ final class ArrayPool[A >: Null <: DeletionFlag] {
   import ArrayPool._
 
   private val arr = new Array[PaddedAtomicReference[A]](size)
-  for (i <- (0 to size-1)) arr(i) = new PaddedAtomicReference[A](null)
+  for (i <- 0 until size) arr(i) = new PaddedAtomicReference[A](null)
 
   private def myStart = (Thread.currentThread.getId % size).toInt
 
@@ -106,10 +106,10 @@ final class ArrayPool[A >: Null <: DeletionFlag] {
 }
 
 final class CircularPool[A <: DeletionFlag] extends Pool[A] {
-  @tailrec private final def findNext(start: AbsNode): Node = start match {
-    case (n: Node) => 
+  @tailrec private def findNext(start: AbsNode): Node = start match {
+    case n: Node =>
       if (n.data.isDeleted) findNext(n.nextVar) else n
-    case(l: LinkNode) => 
+    case l: LinkNode =>
       if (l == cursors(myStart)) null else findNext(l.nextRef.get)
   }
 
@@ -117,18 +117,18 @@ final class CircularPool[A <: DeletionFlag] extends Pool[A] {
     def next: Node
   }
   final class Node private[CircularPool](val data: A) extends AbsNode {
-    private[CircularPool] var nextVar: AbsNode = null
-    def next = findNext(nextVar)
+    private[CircularPool] var nextVar: AbsNode = _
+    def next: Node = findNext(nextVar)
   }
   private final class LinkNode extends AbsNode {
     private[CircularPool] val nextRef = new PaddedAtomicReference[AbsNode](null)
-    def next = findNext(nextRef.get)
+    def next: Node = findNext(nextRef.get)
     def nextInLane: AbsNode = {
       @tailrec def findNext(cur: AbsNode): AbsNode = cur match {
-	case null => null
-	case (n: Node) => 
-	  if (n.data.isDeleted) findNext(n.nextVar) else n
-	case(l: LinkNode) => l
+        case null => null
+	      case n: Node =>
+          if (n.data.isDeleted) findNext(n.nextVar) else n
+        case l: LinkNode => l
       }
       findNext(nextRef.get)
     }
@@ -136,8 +136,8 @@ final class CircularPool[A <: DeletionFlag] extends Pool[A] {
 
   private def size = 8//math.max(1,Chemistry.procs)
   private val cursors = new Array[LinkNode](size)
-  for (i <- 0 to size-1) cursors(i) = new LinkNode
-  for (i <- 0 to size-1) cursors(i).nextRef.set(cursors((i+1) % size))
+  for (i <- 0 until size) cursors(i) = new LinkNode
+  for (i <- 0 until size) cursors(i).nextRef.set(cursors((i+1) % size))
 
   private def myStart = (Thread.currentThread.getId % size).toInt
 
@@ -158,9 +158,9 @@ final class CircularPool[A <: DeletionFlag] extends Pool[A] {
     false
   }
 */
-  @inline final def snoop: Boolean = cursor != null
+  @inline def snoop: Boolean = cursor != null
 
-  def put(a: A) {
+  def put(a: A): Unit = {
     val link = cursors(myStart)
     val ref = link.nextRef
     val node = new Node(a)

@@ -18,8 +18,8 @@ private sealed class Reaction private (
   def canCASImmediate[A,B](k: Reagent[A,B], offer: Offer[B]): Boolean = 
     casCount == 0 && k.alwaysCommits && (offer match {
       case null => true
-      case (_: Catalyst[_]) => true
-      case (_: Waiter[_]) => false
+      case _: Catalyst[_] => true
+      case _: Waiter[_] => false
     })
 
   def withPostCommit(postCommit: Unit => Unit): Reaction =
@@ -40,8 +40,9 @@ private sealed class Reaction private (
       case 1 => casList.head.execAsSingle
       case _ => KCAS.tryCommit(casList)
     }
-    if (success)
-      pcList.foreach(_.apply())  // perform the post-commit actions
+    if (success) {
+      pcList.foreach(_.apply(()))  // perform the post-commit actions
+    }
     success
   }
 }

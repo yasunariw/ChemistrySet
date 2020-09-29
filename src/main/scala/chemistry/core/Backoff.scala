@@ -12,7 +12,7 @@ final class Backoff {
   var seed: Long = Thread.currentThread.getId
   var count = 0
 
-  def once() {
+  def once(): Unit = {
     if (count == 0) 
       count = 1
     else {
@@ -27,7 +27,7 @@ final class Backoff {
     seed % n == 0
   }
 
-  @inline def once(until: => Boolean, mult: Int) {
+  @inline def once(until: => Boolean, mult: Int): Unit = {
 //    if (count == 0) 
 //      count = 1
 //    else {

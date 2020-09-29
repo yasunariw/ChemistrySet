@@ -8,7 +8,7 @@ import chemistry.core.{Reagent, Ref, computed}
 import scala.annotation.tailrec
 
 final class LaggingQueue[A >: Null] {
-  private final case class Node(data: A, next: Ref[Node] = Ref(null))
+  private case class Node(data: A, next: Ref[Node] = Ref(null))
   private val head = Ref(Node(null))
   private var tail = head.read!()
 

@@ -14,11 +14,11 @@ final class Lock {
   private val status = Ref[LockStatus](Unlocked)
 
   final class Condition {  
-    def await {
+    def await(): Unit = {
     }
-    def signal {
+    def signal(): Unit = {
     }
-    def signalAll {
+    def signalAll(): Unit = {
     }
   }
 

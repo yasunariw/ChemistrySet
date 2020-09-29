@@ -116,24 +116,24 @@ private object KCAS {
     // from.
     @tailrec def acquire(casList: List[CAS[_]]): List[CAS[_]] = 
       casList match {
-	case Nil => null
-	case CAS(ref, ov, nv) :: rest => ref.data.get match {
-	  case null => casList // blocking version
-	  case curVal if (curVal == ov) => 
-	    if (ref.data.compareAndSet(ov, null)) acquire(rest)
-	    else casList
-	  case _ => casList
-	}
+	      case Nil => null
+      	case CAS(ref, ov, nv) :: rest => ref.data.get match {
+      	  case null => casList // blocking version
+      	  case curVal if curVal == ov =>
+	          if (ref.data.compareAndSet(ov, null)) acquire(rest)
+      	    else casList
+	        case _ => casList
+	      }
       }
 
-    @tailrec def rollBackBetween(start: List[CAS[_]], end: List[CAS[_]]) { 
+    @tailrec def rollBackBetween(start: List[CAS[_]], end: List[CAS[_]]): Unit = {
       if (start != end) start match {
-	case Nil => throw Util.Impossible // somehow went past the `end`
-	case CAS(ref, ov, nv) :: rest => {
-	  ref.data.lazySet(ov) // roll back to old value
-	  //ref.data.compareAndSet(null, ov)
-	  rollBackBetween(rest, end)
-	}
+        case Nil =>
+          throw Util.Impossible // somehow went past the `end`
+        case CAS(ref, ov, nv) :: rest =>
+          ref.data.lazySet(ov) // roll back to old value
+          //ref.data.compareAndSet(null, ov)
+          rollBackBetween(rest, end)
       }
     }
 
@@ -141,18 +141,18 @@ private object KCAS {
       // do all the CASes first, to propagate update as quickly as
       // possible
       casList.foreach {
-	case CAS(ref, _, nv) => ref.data.lazySet(nv)
+      	case CAS(ref, _, nv) => ref.data.lazySet(nv)
       }
       // now perform relevant post-CAS actions (e.g. waking up
       // waiters)
       casList.foreach {
-	case CAS(ref, _, _) => ref.afterCAS
+      	case CAS(ref, _, _) => ref.afterCAS()
       }
     }
 
     acquire(casList) match {
-      case null => { rollForward(casList); true }
-      case end  => { rollBackBetween(casList, end); false }
+      case null => rollForward(casList); true
+      case end  => rollBackBetween(casList, end); false
     }
   }
 }

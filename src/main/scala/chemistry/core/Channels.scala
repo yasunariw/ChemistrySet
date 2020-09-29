@@ -3,6 +3,7 @@ package chemistry.core
 // Message passing constructions: synchronous channels and swap channels.
 
 import scala.annotation.tailrec
+import scala.language.reflectiveCalls
 
 final private class Message[A,B,C](
   payload: A,		 // the actual content of the message
@@ -17,13 +18,13 @@ final private class Message[A,B,C](
 	c, payload, rx ++ senderRx, receiverK, enclosingOffer)
     def composeI[E](next: Reagent[D,E]): Reagent[C,E] =
       CompleteExchange(receiverK >> next)
-    def maySync = receiverK.maySync
+    def maySync: Boolean = receiverK.maySync
     def alwaysCommits = false
-    def snoop(c: C) = offer.isActive && receiverK.snoop(payload)
+    def snoop(c: C): Boolean = offer.isActive && receiverK.snoop(payload)
   }
 
   val exchange: Reagent[B, A] = senderK >> CompleteExchange(Commit[A]())
-  def isDeleted = !offer.isActive
+  def isDeleted: Boolean = !offer.isActive
 }
 
 private final case class Endpoint[A,B,C]( 
@@ -38,29 +39,31 @@ private final case class Endpoint[A,B,C](
 	      if (retry) Retry else Block
       } else if ((n.data.offer eq offer) || rx.hasOffer(n.data.offer)) {
         tryFrom(n.next, retry)
-      } else n.data.exchange.compose(k).tryReact(a, 
-						 rx.withOffer(n.data.offer), 
-						 offer) match {
-        case Retry => tryFrom(n.next, true)
-        case Block => tryFrom(n.next, retry)
-        case ans   => ans
+      } else {
+        val r = n.data.exchange.compose(k)
+        r.tryReact(a, rx.withOffer(n.data.offer), offer) match {
+          case Retry => tryFrom(n.next, retry = true)
+          case Block => tryFrom(n.next, retry)
+          case ans   => ans
+        }
       }
 
     // send message if so requested.  note that we send the message
     // *before* attempting to react with existing messages in the
     // other direction.
     // TODO: should combine !maysync with blocking check
-    if (offer != null && !k.maySync)
+    if (offer != null && !k.maySync) {
       outgoing.put(new Message(a, rx, k, offer))
+    }
 
     // now attempt an immediate reaction
-    tryFrom(incoming.cursor, false) match {
+    tryFrom(incoming.cursor, retry = false) match {
       case Block => Block // todo: fall back on "multithreaded" reagents
       case ow => ow
     }
   }
   def snoop(a: A): Boolean = incoming.snoop
-  @inline def composeI[D](next: Reagent[C,D]) = 
+  @inline def composeI[D](next: Reagent[C,D]): Endpoint[A, B, D] =
     Endpoint(outgoing, incoming, k.compose(next))
   @inline def maySync = true
   @inline def alwaysCommits = false
