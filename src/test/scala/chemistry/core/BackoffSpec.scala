@@ -1,4 +1,5 @@
-import chemistry.core.Backoff
+package chemistry.core
+
 import org.scalatest.FunSpec
 
 object BackoffSpec extends FunSpec {

@@ -4,6 +4,8 @@ version := "0.1"
 
 scalacOptions += "-deprecation"
 
+scalacOptions += "-feature"
+
 scalacOptions += "-unchecked"
 
 //scalacOptions += "-optimize"

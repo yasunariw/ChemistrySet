@@ -1,5 +1,7 @@
+package chemistry.data
+
+import chemistry.TestUtil
 import chemistry.core.Reagent
-import chemistry.data.{LaggingQueue, MSQueue}
 import org.scalatest.{FunSpec, Matchers}
 
 trait QueueSpec { this: FunSpec with Matchers =>
@@ -69,9 +71,4 @@ trait QueueSpec { this: FunSpec with Matchers =>
 class MSQueueSpec extends FunSpec with Matchers with QueueSpec {
   type queue[A >: Null] = MSQueue[A]
   protected def newQueue[A >: Null]() = new MSQueue[A]()
-}
-
-class LaggingQueueSpec extends FunSpec with Matchers with QueueSpec {
-  type queue[A >: Null] = LaggingQueue[A]
-  protected def newQueue[A >: Null]() = new LaggingQueue[A]()
 }

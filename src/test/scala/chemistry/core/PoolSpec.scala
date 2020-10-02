@@ -1,6 +1,7 @@
+package chemistry.core
+
 import java.util.concurrent.atomic.AtomicReference
 
-import chemistry.core.{CircularPool, DeletionFlag, Pool}
 import org.scalatest.{FunSpec, Matchers}
 
 import scala.language.reflectiveCalls

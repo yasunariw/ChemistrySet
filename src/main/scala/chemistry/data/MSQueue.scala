@@ -22,8 +22,10 @@ final class MSQueue[A >: Null] {
       if (next eq null) {
         search
       } else if (next eq Emp) {
+        // if tail ref is pointing to Emp, execute CAS
         nextRef.cas(Emp, newNode)
       } else {
+        // otherwise, someone enqueued before me; help clean up after it and try again
         tail = next.asInstanceOf[Node]
         search
       }

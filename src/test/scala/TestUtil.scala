@@ -1,3 +1,5 @@
+package chemistry
+
 import java.util.concurrent.LinkedBlockingQueue
 
 object TestUtil {

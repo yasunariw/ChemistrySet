@@ -1,5 +1,7 @@
+package chemistry.data
+
+import chemistry.TestUtil
 import chemistry.core.Reagent
-import chemistry.data.{EliminationStack, TreiberStack}
 import org.scalatest.{FunSpec, Matchers}
 
 trait StackSpec { this: FunSpec with Matchers =>
@@ -18,7 +20,7 @@ trait StackSpec { this: FunSpec with Matchers =>
 
     it("should tryPop as Some _ when full") {
       val s = newStack[java.lang.Integer]()
-      s.push ! 1;
+      s.push ! 1
       s.tryPop ! () should not be empty
     }
 
@@ -40,7 +42,7 @@ trait StackSpec { this: FunSpec with Matchers =>
 
     it("should push from multiple threads in locally-ordered way") {
       val testResults = for (_ <- 1 to 10) yield concTest
-      all (testResults) shouldBe (true)
+      all (testResults) shouldBe true
     }
 
     def concTest: Boolean = {
