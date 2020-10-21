@@ -119,9 +119,9 @@ private abstract class AutoContImpl[A,B,C](val k: Reagent[B, C])
   final def composeI[D](next: Reagent[C,D]): AutoContImpl[A, B, D] =
     new AutoContImpl[A,B,D](k >> next) {
       def retValue(a: A): Any = 
-	AutoContImpl.this.retValue(a)
-      override def newRx(a: A, rx: Reaction): Reaction = 
-	AutoContImpl.this.newRx(a, rx)
+      	AutoContImpl.this.retValue(a)
+      override def newRx(a: A, rx: Reaction): Reaction =
+      	AutoContImpl.this.newRx(a, rx)
     }
   final def alwaysCommits: Boolean = k.alwaysCommits // this needs to be overridable!
   final def maySync: Boolean = k.maySync
@@ -175,13 +175,13 @@ object never extends Reagent[Any, Nothing] {
 }
 
 object computed {
-  private final case class Computed[A,B,C](c: A => Reagent[Unit,B], 
-					   k: Reagent[B,C]) 
-		     extends Reagent[A,C] {
+  private final case class Computed[A,B,C](c: A => Reagent[Unit,B], k: Reagent[B,C])
+    extends Reagent[A,C] {
     def snoop(a: A) = false
     def tryReact(a: A, rx: Reaction, offer: Offer[C]): Any = 
       c(a).compose(k).tryReact((), rx, offer)
-    def composeI[D](next: Reagent[C,D]): Computed[A, B, D] = Computed(c, k.compose(next))
+    def composeI[D](next: Reagent[C,D]): Computed[A, B, D] =
+      Computed(c, k.compose(next))
     def alwaysCommits = false
     def maySync = true
   }
@@ -202,23 +202,23 @@ object choice {
 		     extends Reagent[A,B] {
     def tryReact(a: A, rx: Reaction, offer: Offer[B]): Any = 
       r1.tryReact(a, rx, offer) match {
-	case Retry => 
-	  r2.tryReact(a, rx, offer) match {
-	    case Retry => Retry
-	    case Block => Retry // must retry r1
-	    case ans   => ans
-	  }
-	case Block => r2.tryReact(a, rx, offer)
-	case ans => ans
+	      case Retry =>
+      	  r2.tryReact(a, rx, offer) match {
+            case Retry => Retry
+            case Block => Retry // must retry r1
+            case ans   => ans
+      	  }
+        case Block => r2.tryReact(a, rx, offer)
+        case ans => ans
       }
     def composeI[C](next: Reagent[B,C]): Choice[A, C] =
       next match {
-	case Choice(next1, next2) =>
-	  Choice(r1 >> next1,
-		 Choice(r1 >> next2,
-			Choice(r2 >> next1,
-			       r2 >> next2)))
-	case _ => Choice(r1.compose(next), r2.compose(next))
+      	case Choice(next1, next2) =>
+      	  Choice(r1 >> next1,
+            Choice(r1 >> next2,
+        			Choice(r2 >> next1,
+                r2 >> next2)))
+      	case _ => Choice(r1.compose(next), r2.compose(next))
       }
     def alwaysCommits: Boolean = r1.alwaysCommits && r2.alwaysCommits
     def maySync: Boolean = r1.maySync || r2.maySync
