@@ -72,3 +72,8 @@ class MSQueueSpec extends FunSpec with Matchers with QueueSpec {
   type queue[A >: Null] = MSQueue[A]
   protected def newQueue[A >: Null]() = new MSQueue[A]()
 }
+
+class MSQueueAltSpec extends FunSpec with Matchers with QueueSpec {
+  type queue[A >: Null] = MSQueueAlt[A]
+  protected def newQueue[A >: Null]() = new MSQueueAlt[A]()
+}
