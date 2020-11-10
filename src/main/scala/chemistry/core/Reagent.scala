@@ -174,6 +174,14 @@ object never extends Reagent[Any, Nothing] {
   def maySync = false
 }
 
+object retryAlways extends Reagent[Any, Nothing] {
+  def tryReact(a: Any, rx: Reaction, offer: Offer[Nothing]): Any = Retry
+  def snoop(a: Any) = false
+  def composeI[A](next: Reagent[Nothing, A]): Reagent[Any, Nothing] = retryAlways
+  def alwaysCommits = false
+  def maySync = false
+}
+
 object computed {
   private final case class Computed[A,B,C](c: A => Reagent[Unit,B], k: Reagent[B,C])
     extends Reagent[A,C] {
